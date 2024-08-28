@@ -1,6 +1,6 @@
 import { type Enemy } from "@/types/Enemy"
 
-const enemyIcons = { lobster: "🦞", octopus: "🐙" }
+import { enemyIcons } from "@/helpers/game"
 
 interface EnemyComponentProps { enemy: Enemy }
 

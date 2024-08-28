@@ -3,23 +3,28 @@
 import { useRouter } from "next/navigation"
 
 import { startTransition, useCallback, useEffect } from "react"
+
 import useWebSocket from "react-use-websocket"
+
+import { type Response } from "@/wsServer"
 
 export default function NewGameBtn() {
   const router = useRouter()
-  const { lastMessage, sendMessage } = useWebSocket("ws://localhost:8080")
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket("ws://localhost:8080")
 
   useEffect(() => {
-    if (!lastMessage) return
-    const { type, code } = JSON.parse(lastMessage.data as string) as { type: string, code: string }
-    if ((type === "create") && (code)) {
-      if (code) startTransition(() => router.push(`/${code}`))
+    if (!lastJsonMessage) return
+    const msg = lastJsonMessage as Response
+    if (msg.type === "create") {
+      startTransition(() => router.push(`/${msg.code}`))
+    } else if (msg.type === "error") {
+      console.error(msg.text)
     }
-  }, [lastMessage, router])
+  }, [lastJsonMessage, router])
   
   const newGame = useCallback(() => {
-    sendMessage(JSON.stringify({ action: "create" }))
-  }, [sendMessage])
+    sendJsonMessage({ action: "create" })
+  }, [sendJsonMessage])
 
   return (
     <div className="new-game">

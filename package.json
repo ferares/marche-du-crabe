@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build-ws": "tsc -p tsconfig.ws.json",
-    "start-ws": "node dist/wsServer.js"
+    "ws-build": "tsc -p tsconfig.ws.json",
+    "ws-start": "node dist/wsServer.js"
   },
   "dependencies": {
     "next": "14.2.6",

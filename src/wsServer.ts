@@ -6,8 +6,8 @@ import { type Player } from "./types/Player"
 import { generateCode } from "./helpers/strings"
 import { drawEnemy, generateBoard, getPlayerBoardData, movePlayer, placeEnemy } from "./helpers/game"
 
-type Message = { action: string, code?: string, row?: number, column?: number }
-type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard } | { type: "error", text: string }
+export type Message = { action: string, code?: string, row?: number, column?: number }
+export type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard } | { type: "error", text: string }
 
 type Room = { code: string, board: Board, players: Map<Player, WebSocket> }
 
@@ -115,12 +115,10 @@ export default function startWSServer() {
     ws.on("message", function message(data) {
       const msg = JSON.parse(String(data)) as Message
       if (msg.action === "create") {
-        if (ws.readyState === 1) {
-          // Create a new room
-          const code = createRoom()
-          if (!code) return sendMessage(ws, { type: "error", text: "Error creating room." })
-          sendMessage(ws, { type: "create", code })
-        }
+        // Create a new room
+        const code = createRoom()
+        if (!code) return sendMessage(ws, { type: "error", text: "Error creating room." })
+        sendMessage(ws, { type: "create", code })
       } else if (msg.action === "restart") {
         const room = getPlayerRoom(ws)
         if (room) {
@@ -131,30 +129,28 @@ export default function startWSServer() {
           }
         }
       } else if (msg.action === "join") {
-        if (ws.readyState === 1) {
-          if ((msg.code) && (rooms[msg.code])) {
-            const room = rooms[msg.code]
-            if (!room) return
-            // Check if the player is already in this room
-            const playerRoom = getPlayerRoom(ws)
-            if (playerRoom?.code !== msg.code) {
-              // Check if the room is full
-              if (room.players.size === 2) {
-                sendMessage(ws, { type: "error", text: `Room is full ${msg.code}.` })
-              } else {
-                // If the player is already in another room leave it
-                leaveRoom(ws)
-                // Add player to this room
-                const board = addPlayer(msg.code, ws)
-                if (!board) return
-                const playerChar = getPlayerChar(ws, room)
-                if (!playerChar) return
-                sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, board) })
-              }
+        if (msg.code) {
+          const room = rooms[msg.code]
+          if (!room) return sendMessage(ws, { type: "error", text: "Room not found." })
+          // Check if the player is already in this room
+          const playerRoom = getPlayerRoom(ws)
+          if (playerRoom?.code !== msg.code) {
+            // Check if the room is full
+            if (room.players.size === 2) {
+              sendMessage(ws, { type: "error", text: `Room is full ${msg.code}.` })
+            } else {
+              // If the player is already in another room leave it
+              leaveRoom(ws)
+              // Add player to this room
+              const board = addPlayer(msg.code, ws)
+              if (!board) return
+              const playerChar = getPlayerChar(ws, room)
+              if (!playerChar) return
+              sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, board) })
             }
-          } else {
-            sendMessage(ws, { type: "error", text: `No room with code ${msg.code} exists.` })
           }
+        } else {
+          sendMessage(ws, { type: "error", text: `No room with code ${msg.code} exists.` })
         }
       } else if (msg.action === "move") {
         const { row, column } = msg

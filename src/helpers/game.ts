@@ -10,6 +10,7 @@ import { type GameState } from "../types/GameState"
 export const objectRevealedIcon = "🐚"
 export const playersIcon = "🦀"
 export const shrimpIcon = "🦐"
+export const enemyIcons = { lobster: "🦞", octopus: "🐙" }
 const objectIcons = ["📠", "🕶️", "🚽", "🩲", "🥫", "⚓", "🛞", "🛹", "🪀", "🛢️", "🎸", "🏐"]
 
 function getRandom(min: number, max: number, exclude?: number[]) {
@@ -26,7 +27,7 @@ function getObjectsCountColumns(board: Card[][]) {
     let currentColumn = 0
     for (const card of row) {
       const objectCountCurrentColumn = objectCountColumns[currentColumn]
-      if ((card.object) && (objectCountCurrentColumn)) {
+      if ((card.object) && (objectCountCurrentColumn !== undefined)) {
         objectCountColumns[currentColumn] = objectCountCurrentColumn + 1
       }
       currentColumn++

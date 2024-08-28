@@ -1,48 +1,57 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+
+import { startTransition, useEffect, useState } from "react"
+
+import useWebSocket from "react-use-websocket"
 
 import { type PlayerBoard } from "@/types/Board"
 
-import { objectRevealedIcon, shrimpIcon } from "@/helpers/game"
+import { enemyIcons, objectRevealedIcon, shrimpIcon } from "@/helpers/game"
+
+import { type Response } from "@/wsServer"
 
 import EnemyComponent from "./Enemy"
 import ObjectComponent from "./Object"
-import useWebSocket from "react-use-websocket"
 import CardComponent from "./Card"
 
 interface BoardComponentProps { code: string }
 
 export default function BoardComponent({ code }: BoardComponentProps) {
-  const { lastMessage, sendMessage } = useWebSocket("ws://localhost:8080")
+  const router = useRouter()
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket("ws://localhost:8080")
   const [board, setBoard] = useState<PlayerBoard>()
 
   useEffect(() => {
-    if (!lastMessage) return
-    const msg = JSON.parse(lastMessage.data as string) as { type: string, board: PlayerBoard }
+    if (!lastJsonMessage) return
+    const msg = lastJsonMessage as Response
     if ((msg.type === "join") || (msg.type === "update")) {
       setBoard(msg.board)
+    } else if (msg.type === "error") {
+      console.error(msg.text)
+      startTransition(() => router.push("/"))
     }
-  }, [lastMessage])
+  }, [lastJsonMessage, router])
 
   useEffect(() => {
-    if (!board) sendMessage(JSON.stringify({ action: "join", code }))
-  }, [code, sendMessage, board])
+    if (!board) sendJsonMessage({ action: "join", code })
+  }, [code, sendJsonMessage, board])
 
   function restartGame() {
-    sendMessage(JSON.stringify({ action: "restart" }))
+    sendJsonMessage({ action: "restart" })
   }
 
   function handleDrawEnemy() {
-    sendMessage(JSON.stringify({ action: "draw" }))
+    sendJsonMessage({ action: "draw" })
   }
 
   function placeEnemy(row: number, column: number) {
-    sendMessage(JSON.stringify({ action: "place", row, column }))
+    sendJsonMessage({ action: "place", row, column })
   }
 
   function movePlayer(row: number, column: number) {
-    sendMessage(JSON.stringify({ action: "move", row, column }))
+    sendJsonMessage({ action: "move", row, column })
   }
 
   if (!board) return "Loading...."
@@ -53,7 +62,7 @@ export default function BoardComponent({ code }: BoardComponentProps) {
     <>
       <header className="game-header">
         <h2 className="turn-title">
-          Turn: {turn}
+          {turn === character ? "Your turn" : "Waiting for other player"}
         </h2>
         <span className="counts">
           <span className="count">
@@ -102,35 +111,43 @@ export default function BoardComponent({ code }: BoardComponentProps) {
           {[0,1,2,3,4,5].map((row) => (
             <li key={row}>
               {currentEnemy && currentEnemy.row === row && (
-                <span className={`card btn card--enemy-${currentEnemy.player} card--disabled`}>
+                <span className={`card btn btn--enemy card--enemy-${currentEnemy.player} card--disabled`} title="Place enemy on this row">
                   <EnemyComponent enemy={currentEnemy} />
                 </span>
               )}
             </li>
           ))}
+          {(gameState === "draw") && (turn === character) && (
+            <li>
+              <button type="button" className="card btn btn--draw" title="Draw an enemy" onClick={handleDrawEnemy}>
+                <span>
+                  {enemyIcons.lobster}
+                </span>
+                <span>
+                  {enemyIcons.octopus}
+                </span>
+              </button>
+            </li>
+          )}
         </ol>
-      </div>
-      <div className="game-actions">
-        {/* TODO: win & lost should reset the current room instead of creating a new one */}
-        {(gameState === "lost") && (
-          <div className="new-game">
-            <button type="button" className="btn" onClick={restartGame}>
-              Lost - New Game?
-            </button>
+        {((gameState === "lost") || (gameState === "win")) && (
+          <div className="game-actions">
+            {(gameState === "lost") && (
+              <div className="new-game">
+                <button type="button" className="btn" onClick={restartGame}>
+                  Lost - New Game?
+                </button>
+              </div>
+            )}
+            {(gameState === "win") && (
+              <div className="new-game">
+                <button type="button" className="btn" onClick={restartGame}>
+                  Win! - New Game?
+                </button>
+              </div>
+            )}
           </div>
-        )}
-        {(gameState === "win") && (
-          <div className="new-game">
-            <button type="button" className="btn" onClick={restartGame}>
-              Win! - New Game?
-            </button>
-          </div>
-        )}
-        {(gameState === "draw") && (turn === character) && (
-          <button type="button" className="btn" onClick={handleDrawEnemy}>
-            Draw Enemy
-          </button>
-        )}
+          )}
       </div>
     </>
   )
