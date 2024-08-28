@@ -1,0 +1,1 @@
+export type GameState = "draw" | "place" | "move" | "lost" | "win"

@@ -1,9 +1,9 @@
-import Game from "@/components/Game"
+import NewGameBtn from "@/components/NewGameBtn"
 
 export default function Home() {
   return (
     <main className="main-content">
-      <Game />
+      <NewGameBtn label="New Game" />
     </main>
   );
 }

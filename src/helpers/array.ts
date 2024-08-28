@@ -1,10 +1,8 @@
 export function shuffle<T>(input: T[]) {
   const array = [...input]
-  let currentIndex = array.length
-  while (currentIndex != 0) {
-    let randomIndex = Math.floor(Math.random() * currentIndex)
-    currentIndex--
-    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
+  for (let index = 0; index < array.length; index++) {
+    let randomIndex = Math.floor(Math.random() * index);
+    [array[index], array[randomIndex]] = [array[randomIndex], array[index]]
   }
   return array
 }
