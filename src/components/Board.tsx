@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react"
 
-import { PlayerBoard } from "@/types/Board"
+import { type PlayerBoard } from "@/types/Board"
 
-import { objectRevealedIcon, playersIcon, shrimpIcon } from "@/helpers/game"
+import { objectRevealedIcon, shrimpIcon } from "@/helpers/game"
 
 import EnemyComponent from "./Enemy"
 import ObjectComponent from "./Object"
-import NewGameBtn from "./NewGameBtn"
 import useWebSocket from "react-use-websocket"
 import CardComponent from "./Card"
 
@@ -19,9 +18,8 @@ export default function BoardComponent({ code }: BoardComponentProps) {
   const [board, setBoard] = useState<PlayerBoard>()
 
   useEffect(() => {
-    console.log(lastMessage)
     if (!lastMessage) return
-    const msg = JSON.parse(lastMessage.data)
+    const msg = JSON.parse(lastMessage.data as string) as { type: string, board: PlayerBoard }
     if ((msg.type === "join") || (msg.type === "update")) {
       setBoard(msg.board)
     }
@@ -30,6 +28,10 @@ export default function BoardComponent({ code }: BoardComponentProps) {
   useEffect(() => {
     if (!board) sendMessage(JSON.stringify({ action: "join", code }))
   }, [code, sendMessage, board])
+
+  function restartGame() {
+    sendMessage(JSON.stringify({ action: "restart" }))
+  }
 
   function handleDrawEnemy() {
     sendMessage(JSON.stringify({ action: "draw" }))
@@ -111,10 +113,18 @@ export default function BoardComponent({ code }: BoardComponentProps) {
       <div className="game-actions">
         {/* TODO: win & lost should reset the current room instead of creating a new one */}
         {(gameState === "lost") && (
-          <NewGameBtn label="Lost - New Game?" />
+          <div className="new-game">
+            <button type="button" className="btn" onClick={restartGame}>
+              Lost - New Game?
+            </button>
+          </div>
         )}
         {(gameState === "win") && (
-          <NewGameBtn label="Win! - New Game?" />
+          <div className="new-game">
+            <button type="button" className="btn" onClick={restartGame}>
+              Win! - New Game?
+            </button>
+          </div>
         )}
         {(gameState === "draw") && (turn === character) && (
           <button type="button" className="btn" onClick={handleDrawEnemy}>

@@ -1,4 +1,4 @@
-import { Object } from "@/types/Object"
+import { type Object } from "@/types/Object"
 
 import EnemyComponent from "./Enemy"
 

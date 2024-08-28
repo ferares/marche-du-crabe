@@ -1,4 +1,4 @@
-import { Enemy } from "./Enemy"
+import { type Enemy } from "./Enemy"
 
 export type Object = {
   icon: string

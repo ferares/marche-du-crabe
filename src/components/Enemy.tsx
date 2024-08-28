@@ -1,4 +1,4 @@
-import { Enemy } from "@/types/Enemy"
+import { type Enemy } from "@/types/Enemy"
 
 const enemyIcons = { lobster: "🦞", octopus: "🐙" }
 

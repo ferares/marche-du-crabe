@@ -1,8 +1,8 @@
-import { Card } from "./Card"
-import { Enemy } from "./Enemy"
-import { GameState } from "./GameState"
-import { Player } from "./Player"
-import { Position } from "./Position"
+import { type Card } from "./Card"
+import { type Enemy } from "./Enemy"
+import { type GameState } from "./GameState"
+import { type Player } from "./Player"
+import { type Position } from "./Position"
 
 export type Board = {
   cards: Card[][]

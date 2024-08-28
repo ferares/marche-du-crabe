@@ -1,6 +1,6 @@
-import { Card } from "@/types/Card"
-import { Player } from "@/types/Player"
-import { Position } from "@/types/Position"
+import { type Card } from "@/types/Card"
+import { type Player } from "@/types/Player"
+import { type Position } from "@/types/Position"
 
 import { playersIcon } from "@/helpers/game"
 
@@ -11,7 +11,7 @@ interface CardComponentProps { card: Card, playersPos: Position, turn: Player, c
 
 export default function CardComponent({ card, turn, playersPos, cardPosition, onClick }: CardComponentProps) {
   const hasPlayer = playersPos.column === cardPosition.column && playersPos.row === cardPosition.row
-  const hasEnemy = card.enemy?.player || card.object?.revealed && card.object?.enemy?.player
+  const hasEnemy = card.enemy?.player ?? (card.object?.revealed && card.object?.enemy?.player)
 
   return (
     <button type="button" className={`card btn ${onClick ? "" : "card--disabled"} ${hasPlayer ? "card--player" : ""} ${hasEnemy ? `card--enemy-${hasEnemy}` : ""} ${card.object ? "card--object" : ""} ${card.object?.revealed ? "card--object-revealed" : ""}`} onClick={onClick}>

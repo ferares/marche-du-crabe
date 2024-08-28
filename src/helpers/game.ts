@@ -1,11 +1,11 @@
 import { shuffle } from "./array"
 
-import { Board, PlayerBoard } from "../types/Board"
-import { Card } from "../types/Card"
-import { Enemy } from "../types/Enemy"
-import { Player } from "../types/Player"
-import { Position } from "../types/Position"
-import { GameState } from "../types/GameState"
+import { type Board, type PlayerBoard } from "../types/Board"
+import { type Card } from "../types/Card"
+import { type Enemy } from "../types/Enemy"
+import { type Player } from "../types/Player"
+import { type Position } from "../types/Position"
+import { type GameState } from "../types/GameState"
 
 export const objectRevealedIcon = "🐚"
 export const playersIcon = "🦀"
@@ -25,7 +25,10 @@ function getObjectsCountColumns(board: Card[][]) {
   for (const row of board) {
     let currentColumn = 0
     for (const card of row) {
-      if (card.object) objectCountColumns[currentColumn]++
+      const objectCountCurrentColumn = objectCountColumns[currentColumn]
+      if ((card.object) && (objectCountCurrentColumn)) {
+        objectCountColumns[currentColumn] = objectCountCurrentColumn + 1
+      }
       currentColumn++
     }
   }
@@ -61,12 +64,13 @@ function generateHiddenEnemiesIndexes() {
 }
 
 function cardHasEnemy(card: Card): boolean {
-  return (!!card.enemy || (card.object?.revealed && !!card.object.enemy)) || false
+  return (!!card.enemy || (card.object?.revealed && !!card.object.enemy)) ?? false
 }
 
 function pathHasEnemy(cards: Card[][], origin: Position, destination: Position) {
   if ((origin.column === destination.column) && (origin.row === destination.row)) return false
-  if (cardHasEnemy(cards[destination.row][destination.column])) return true
+  const card = cards[destination.row]?.[destination.column]
+  if ((card) && (cardHasEnemy(card))) return true
   if (origin.row !== destination.row) {
     let loopStart = origin.row + 1
     let loopEnd = destination.row
@@ -75,7 +79,8 @@ function pathHasEnemy(cards: Card[][], origin: Position, destination: Position) 
       loopEnd = origin.row - 1
     }
     for (let row = loopStart; row <= loopEnd; row++) {
-      if (cardHasEnemy(cards[row][origin.column])) return true
+      const card = cards[row]?.[origin.column]
+      if ((card) && (cardHasEnemy(card))) return true
     }
   } else {
     let loopStart = origin.column + 1
@@ -85,7 +90,8 @@ function pathHasEnemy(cards: Card[][], origin: Position, destination: Position) 
       loopEnd = origin.column - 1
     }
     for (let column = loopStart; column <= loopEnd; column++) {
-      if (cardHasEnemy(cards[origin.row][column])) return true
+      const card = cards[origin.row]?.[column]
+      if ((card) && (cardHasEnemy(card))) return true
     }
   }
   return false
@@ -112,9 +118,10 @@ function getPlayerForbiddenObjects(player: Player, cards: Card[][]): Position[] 
   const postions: Position[] = []
   for (let row = 0; row < cards.length; row++) {
     const cardRow = cards[row]
+    if (!cardRow) continue
     for (let column = 0; column < cardRow.length; column++) {
-      const card = cardRow[column]
-      if (card.object?.enemy?.player === player) postions.push({ row, column })
+      const card = cardRow?.[column]
+      if (card?.object?.enemy?.player === player) postions.push({ row, column })
     }
   }
   return postions
@@ -125,7 +132,7 @@ function updateGameState(state: GameState, board: Board) {
   board.gameState = state
 }
 
-export function generateBoard(): Board {
+export function generateBoard(): Board | undefined {
   const cards: Card[][] = []
   const shuffledObjectIcons = shuffle(objectIcons)
   const playersPos: Position = { column: 0, row: 5 }
@@ -133,7 +140,7 @@ export function generateBoard(): Board {
   const solEnemies = generateEnemies("sol", barcoEnemies)
   const enemies: { [player in Player]: Enemy[] } = { barco: barcoEnemies, sol: solEnemies }
   const enemiesIndexes = generateHiddenEnemiesIndexes()
-  let objectIconIndex = 0
+  let objectIconIndex: keyof typeof shuffledObjectIcons = 0
   for (let row = 0; row < 6; row++) {
     const excludeColumns: number[] = []
     const objectsCountColumns = getObjectsCountColumns(cards)
@@ -148,9 +155,11 @@ export function generateBoard(): Board {
     for (let column = 0; column < 6; column++) {
       const card: Card = {}
       if (objectsColumns.includes(column)) {
-        card.object = { icon: shuffledObjectIcons[objectIconIndex], revealed: false }
+        const icon = shuffledObjectIcons[objectIconIndex]
+        if (!icon) continue
+        card.object = { icon, revealed: false }
         const enemyIndex = enemiesIndexes.indexOf(objectIconIndex)
-        if (enemyIndex > -1) {
+        if ((enemyIndex > -1) && (card.object)) {
           const player = enemyIndex < 2 ? "barco" : "sol"
           card.object.enemy = { isLobster: false, player, row }
         }
@@ -160,8 +169,9 @@ export function generateBoard(): Board {
     }
     cards.push(columns)
   }
+  if (!cards[5]) return
   for (let index = 0; index < cards[5].length; index++) {
-    if (!cards[5][index].object) {
+    if (!cards[5][index]?.object) {
       playersPos.column = index
       break
     }
@@ -195,7 +205,9 @@ export function drawEnemy(board: Board) {
 
 export function placeEnemy(row: number, column: number, board: Board) {
   if (!board.currentEnemy) return
-  board.cards[row][column].enemy = { isLobster: board.currentEnemy.isLobster, player: board.turn, row }
+  const targetCard = board.cards[row]?.[column]
+  if (!targetCard) return
+  targetCard.enemy = { isLobster: board.currentEnemy.isLobster, player: board.turn, row }
   if ((board.playersPos.row === row) && (board.playersPos.column === column)) {
     eatShrimp(1, board)
   }
@@ -204,7 +216,8 @@ export function placeEnemy(row: number, column: number, board: Board) {
 }
 
 export function movePlayer(row: number, column: number, board: Board) {
-  const card = board.cards[row][column]
+  const card = board.cards[row]?.[column]
+  if (!card) return
   if (pathHasEnemy(board.cards, board.playersPos, { row, column })) {
     eatShrimp(1, board)
   }
