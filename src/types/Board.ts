@@ -25,4 +25,5 @@ export type PlayerBoard = {
   turn: Player
   currentEnemy?: Enemy
   freedCount: number
+  enemyCount: number
 }

@@ -7,9 +7,9 @@ import { generateCode } from "./helpers/strings"
 import { drawEnemy, generateBoard, getPlayerBoardData, movePlayer, placeEnemy } from "./helpers/game"
 
 export type Message = { action: string, code?: string, row?: number, column?: number }
-export type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard } | { type: "error", text: string }
+export type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard, new?: boolean } | { type: "error", text: string } | { type: "start" }
 
-type Room = { code: string, board: Board, players: Map<Player, WebSocket> }
+type Room = { code: string, board: Board, players: Map<Player, WebSocket>, timeout?: NodeJS.Timeout }
 
 const rooms: Record<string, Room> = {}
 
@@ -54,9 +54,9 @@ function restartRoom(room: Room) {
   return true
 }
 
-function addPlayer(code: string, ws: WebSocket) {
-  const room = rooms[code]
-  if (!room) return
+function addPlayer(room: Room, ws: WebSocket) {
+  // Stop the room timeout delete (if any)
+  clearTimeout(room.timeout)
   if (room.players.size >= 2) return
   if (room.players.has("barco")) room.players.set("sol", ws)
   else room.players.set("barco", ws)
@@ -69,8 +69,9 @@ function leaveRoom(ws: WebSocket) {
   const character = getPlayerChar(ws, room)
   if (!character) return
   room.players.delete(character)
+  // If room becomes empty delete after timeout
   if (room.players.size === 0) {
-    delete(rooms[room.code])
+    room.timeout = setTimeout(() => delete(rooms[room.code]), 60000)
   }
 }
 
@@ -139,14 +140,18 @@ export default function startWSServer() {
             if (room.players.size === 2) {
               sendMessage(ws, { type: "error", text: `Room is full ${msg.code}.` })
             } else {
+              // Get the first player in the room (if any)
+              const barco = room.players.get("barco")
               // If the player is already in another room leave it
               leaveRoom(ws)
               // Add player to this room
-              const board = addPlayer(msg.code, ws)
+              const board = addPlayer(room, ws)
               if (!board) return
               const playerChar = getPlayerChar(ws, room)
               if (!playerChar) return
-              sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, board) })
+              sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, board), new: room.players.size < 2 })
+              // if there was a player already in the room update them so the game can start
+              if (barco) sendMessage(barco, { type: "start" })
             }
           }
         } else {

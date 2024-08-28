@@ -10,7 +10,7 @@ import { type Response } from "@/wsServer"
 
 export default function NewGameBtn() {
   const router = useRouter()
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket("ws://localhost:8080")
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket(process.env.NEXT_PUBLIC_WS_URL ?? "")
 
   useEffect(() => {
     if (!lastJsonMessage) return

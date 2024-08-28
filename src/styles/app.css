@@ -171,6 +171,25 @@ body {
   inset: 0;
 }
 
+.share {
+  align-items: center;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0;
+}
+
+.share-content {
+  background-color: cadetblue;
+  color: white;
+  font-size: 2rem;
+  border: .5rem solid white;
+  border-radius: 2rem;
+  box-shadow: 8px 16px 16px 0 rgba(0, 0, 0, .2);
+  padding: 2rem;
+}
+
 .game-actions .btn {
   box-shadow: 4px 8px 8px 0 rgba(0, 0, 0, .2);
 }
@@ -184,14 +203,11 @@ body {
   border: 2px solid black;
   border-radius: 50%;
   box-shadow: 1px 1px 0 1px black;
-  display: flex;
-  font-size: 2rem;
-  height: 3rem;
+  display: inline-flex;
+  font-size: 1.5rem;
+  height: 2.4rem;
   justify-content: center;
-  position: absolute;
-  right: .5rem;
-  top: .5rem;
-  width: 3rem;
+  width: 2.4rem;
 }
 
 .players--barco {
@@ -200,6 +216,15 @@ body {
 
 .players--sol {
   background-color: darkslategray;
+}
+
+.card .players {
+  font-size: 2rem;
+  height: 3rem;
+  position: absolute;
+  right: .5rem;
+  top: .5rem;
+  width: 3rem;
 }
 
 @keyframes pulse {

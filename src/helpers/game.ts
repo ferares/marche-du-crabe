@@ -186,6 +186,7 @@ export function generateBoard(): Board | undefined {
 }
 
 export function getPlayerBoardData(player: Player, board: Board): PlayerBoard {
+  const enemyCount = board.enemies[player].length
   return {
     character: player,
     cards: getPlayerCardData(board.cards),
@@ -196,6 +197,7 @@ export function getPlayerBoardData(player: Player, board: Board): PlayerBoard {
     turn: board.turn,
     currentEnemy: board.currentEnemy,
     freedCount: board.freedCount,
+    enemyCount,
   }
 }
 
