@@ -43,7 +43,10 @@ function createRoom() {
   while (rooms[code]) code = generateCode(10)
   const board = generateBoard()
   if (!board) return
-  rooms[code] = { code, board, players: new Map() }
+  const room: Room = { code, board, players: new Map() }
+  // Delete the room if room stays empty after timeout
+  room.timeout = setTimeout(() => delete(rooms[code]), 60000)
+  rooms[code] = room
   return code
 }
 
