@@ -8,7 +8,7 @@ import { drawEnemy, generateBoard, getPlayerBoardData, movePlayer, placeEnemy } 
 
 type Action = "create" | "join" | "draw" | "place" | "move" | "restart" | "ping"
 export type Message = { action: Action, code?: string, row?: number, column?: number }
-export type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard, new?: boolean } | { type: "error", text: string } | { type: "start" } | { type: "pong" } 
+export type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard, new?: boolean } | { type: "error", code: number, text: string } | { type: "start" } | { type: "pong" } 
 
 type Room = { code: string, board: Board, players: Map<Player, WebSocket>, timeout?: NodeJS.Timeout }
 
@@ -127,14 +127,14 @@ export default function startWSServer() {
         msg = decodeMessage(data)
       } catch (error) {
         console.error(error)
-        return sendMessage(ws, { type: "error", text: "Error parsing message" })
+        return sendMessage(ws, { type: "error", code: 400, text: "Error parsing message" })
       }
       if (msg.action === "ping") {
         sendMessage(ws, { type: "pong" })
       } else if (msg.action === "create") {
         // Create a new room
         const code = createRoom()
-        if (!code) return sendMessage(ws, { type: "error", text: "Error creating room." })
+        if (!code) return sendMessage(ws, { type: "error", code: 500, text: "Error creating room" })
         sendMessage(ws, { type: "create", code })
       } else if (msg.action === "restart") {
         const room = getPlayerRoom(ws)
@@ -142,19 +142,19 @@ export default function startWSServer() {
           if (restartRoom(room)) {
             broadCastBoardUpdate(room)
           } else {
-            sendMessage(ws, { type: "error", text: "Error resetting room." })
+            sendMessage(ws, { type: "error", code: 500, text: "Error resetting room" })
           }
         }
       } else if (msg.action === "join") {
         if (msg.code) {
           const room = rooms[msg.code]
-          if (!room) return sendMessage(ws, { type: "error", text: "Room not found." })
+          if (!room) return sendMessage(ws, { type: "error", code: 404, text: "Room not found" })
           // Check if the player is already in this room
           const playerRoom = getPlayerRoom(ws)
           if (playerRoom?.code !== msg.code) {
             // Check if the room is full
             if (room.players.size === 2) {
-              sendMessage(ws, { type: "error", text: `Room is full ${msg.code}.` })
+              sendMessage(ws, { type: "error", code: 409, text: "Room is full" })
             } else {
               // Get the first player in the room (if any)
               const barco = room.players.get("barco")
@@ -162,16 +162,16 @@ export default function startWSServer() {
               leaveRoom(ws)
               // Add player to this room
               const board = addPlayer(room, ws)
-              if (!board) return sendMessage(ws, { type: "error", text: "Error adding player to room." })
+              if (!board) return sendMessage(ws, { type: "error", code: 500, text: "Error adding player to room" })
               const playerChar = getPlayerChar(ws, room)
-              if (!playerChar) return sendMessage(ws, { type: "error", text: "Error setting player character." })
+              if (!playerChar) return sendMessage(ws, { type: "error", code: 500, text: "Error setting player character" })
               sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, board), new: room.players.size < 2 })
               // if there was a player already in the room update them so the game can start
               if (barco) sendMessage(barco, { type: "start" })
             }
           }
         } else {
-          sendMessage(ws, { type: "error", text: `No room with code ${msg.code} exists.` })
+          sendMessage(ws, { type: "error", code: 400, text: "Room code not provided" })
         }
       } else if (msg.action === "move") {
         const { row, column } = msg
