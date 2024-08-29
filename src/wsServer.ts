@@ -1,4 +1,4 @@
-import { type WebSocket, WebSocketServer } from "ws"
+import { type RawData, type WebSocket, WebSocketServer } from "ws"
 
 import { type PlayerBoard, type Board } from "./types/Board"
 import { type Player } from "./types/Player"
@@ -6,12 +6,17 @@ import { type Player } from "./types/Player"
 import { generateCode } from "./helpers/strings"
 import { drawEnemy, generateBoard, getPlayerBoardData, movePlayer, placeEnemy } from "./helpers/game"
 
-export type Message = { action: string, code?: string, row?: number, column?: number }
-export type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard, new?: boolean } | { type: "error", text: string } | { type: "start" }
+type Action = "create" | "join" | "draw" | "place" | "move" | "restart" | "ping"
+export type Message = { action: Action, code?: string, row?: number, column?: number }
+export type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard, new?: boolean } | { type: "error", text: string } | { type: "start" } | { type: "pong" } 
 
 type Room = { code: string, board: Board, players: Map<Player, WebSocket>, timeout?: NodeJS.Timeout }
 
 const rooms: Record<string, Room> = {}
+
+function decodeMessage(data: RawData): Message {
+  return JSON.parse(String(data)) as Message
+}
 
 function sendMessage(ws: WebSocket, msg: Response) {
   if (!ws.OPEN) {
@@ -117,8 +122,16 @@ export default function startWSServer() {
     ws.on("close", () => leaveRoom(ws))
   
     ws.on("message", function message(data) {
-      const msg = JSON.parse(String(data)) as Message
-      if (msg.action === "create") {
+      let msg: Message | undefined
+      try {
+        msg = decodeMessage(data)
+      } catch (error) {
+        console.error(error)
+        return sendMessage(ws, { type: "error", text: "Error parsing message" })
+      }
+      if (msg.action === "ping") {
+        sendMessage(ws, { type: "pong" })
+      } else if (msg.action === "create") {
         // Create a new room
         const code = createRoom()
         if (!code) return sendMessage(ws, { type: "error", text: "Error creating room." })
@@ -149,9 +162,9 @@ export default function startWSServer() {
               leaveRoom(ws)
               // Add player to this room
               const board = addPlayer(room, ws)
-              if (!board) return
+              if (!board) return sendMessage(ws, { type: "error", text: "Error adding player to room." })
               const playerChar = getPlayerChar(ws, room)
-              if (!playerChar) return
+              if (!playerChar) return sendMessage(ws, { type: "error", text: "Error setting player character." })
               sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, board), new: room.players.size < 2 })
               // if there was a player already in the room update them so the game can start
               if (barco) sendMessage(barco, { type: "start" })
