@@ -2,13 +2,14 @@
 
 import { useRouter } from "next/navigation"
 
-import { startTransition, useEffect, useState } from "react"
+import { startTransition, useCallback, useEffect, useState } from "react"
 
 import useWebSocket from "react-use-websocket"
 
 import { type PlayerBoard } from "@/types/Board"
 
 import { enemyIcons, objectRevealedIcon, shrimpIcon } from "@/helpers/game"
+import { wsOptions, wsURL } from "@/helpers/websockets"
 
 import { type Response } from "@/wsServer"
 
@@ -20,9 +21,17 @@ interface BoardComponentProps { code: string }
 
 export default function BoardComponent({ code }: BoardComponentProps) {
   const router = useRouter()
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(process.env.NEXT_PUBLIC_WS_URL ?? "")
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions)
   const [board, setBoard] = useState<PlayerBoard>()
   const [waitForPlayer, setWaitForPlayer] = useState(true)
+
+  const restartGame = useCallback(() => sendJsonMessage({ action: "restart" }), [sendJsonMessage])
+
+  const handleDrawEnemy = useCallback(() => sendJsonMessage({ action: "draw" }), [sendJsonMessage])
+
+  const placeEnemy = useCallback((row: number, column: number) => sendJsonMessage({ action: "place", row, column }), [sendJsonMessage])
+
+  const movePlayer = useCallback((row: number, column: number) => sendJsonMessage({ action: "move", row, column }), [sendJsonMessage])
 
   useEffect(() => {
     if (!lastJsonMessage) return
@@ -38,37 +47,15 @@ export default function BoardComponent({ code }: BoardComponentProps) {
     }
   }, [lastJsonMessage, router])
 
-  useEffect(() => {
-    if (!board) sendJsonMessage({ action: "join", code })
-  }, [code, sendJsonMessage, board])
+  useEffect(() => { if (!board) sendJsonMessage({ action: "join", code }) }, [code, sendJsonMessage, board])
 
-  function restartGame() {
-    sendJsonMessage({ action: "restart" })
-  }
-
-  function handleDrawEnemy() {
-    sendJsonMessage({ action: "draw" })
-  }
-
-  function placeEnemy(row: number, column: number) {
-    sendJsonMessage({ action: "place", row, column })
-  }
-
-  function movePlayer(row: number, column: number) {
-    sendJsonMessage({ action: "move", row, column })
-  }
-
-  async function handleShare() {
+  const handleShare = useCallback(async () => {
     if (navigator?.share) {
-      await navigator.share({
-        title: 'BusesUY',
-        text: '',
-        url: window.location.href,
-      })
+      await navigator.share({ title: 'Join my game!', text: '', url: window.location.href })
     } else {
-      await navigator?.clipboard.writeText(window.location.href)
+      await navigator?.clipboard?.writeText(window.location.href)
     }
-  }
+  }, [])
 
   if (!board) return "Loading...."
 
