@@ -1,5 +1,28 @@
 {
   "Labels": {
-    "close": "Close"
+    "close": "Close",
+    "loading": "Loading..."
+  },
+  "Messages": {
+    "error": "There was an unexpected error. Please try again later",
+    "error-new-game": "There was a problem creating a new game. Try again later",
+    "game-not-found": "Game session not found",
+    "game-full": "Game session full",
+    "connection-lost": "The connection to the game server was lost. Reconnecting...",
+    "your-turn": "Your turn",
+    "waiting-for-player": "Waiting for other player",
+    "draw-card": "Draw an enemy card",
+    "place-card": "Place the enemy card",
+    "move-crabs": "Move the crabs",
+    "freed-crabs": "Freed crabs",
+    "remaining-shrimps": "Remaining shrimps",
+    "remaining-enemy-cards": "Remaining enemy cards",
+    "object-enemy": "Object with enemy",
+    "place-enemy": "Place enemy on this row",
+    "new-game": "New Game",
+    "game-lose": "You Lose! - New Game?",
+    "game-win": "You Win! - New Game?",
+    "share": "Share the page URL with a friend to start the game",
+    "player-disconnected": "The other player has disconnected! Waiting for them to re-join..."
   }
 }

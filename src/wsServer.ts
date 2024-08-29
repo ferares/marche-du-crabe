@@ -8,9 +8,9 @@ import { drawEnemy, generateBoard, getPlayerBoardData, movePlayer, placeEnemy } 
 
 type Action = "create" | "join" | "draw" | "place" | "move" | "restart" | "ping"
 export type Message = { action: Action, code?: string, row?: number, column?: number }
-export type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard, new?: boolean } | { type: "error", code: number, text: string } | { type: "start" } | { type: "pong" } 
+export type Response = { type: "create", code: string } | { type: "join" | "update", board: PlayerBoard } | { type: "error", code: number, text: string } | { type: "start" } | { type: "pong" } 
 
-type Room = { code: string, board: Board, players: Map<Player, WebSocket>, timeout?: NodeJS.Timeout }
+type Room = { code: string, board: Board, players: Map<Player, WebSocket>, new: boolean, timeout?: NodeJS.Timeout }
 
 const rooms: Record<string, Room> = {}
 
@@ -48,7 +48,7 @@ function createRoom() {
   while (rooms[code]) code = generateCode(10)
   const board = generateBoard()
   if (!board) return
-  const room: Room = { code, board, players: new Map() }
+  const room: Room = { code, board, players: new Map(), new: true }
   // Delete the room if room stays empty after timeout
   room.timeout = setTimeout(() => delete(rooms[code]), 60000)
   rooms[code] = room
@@ -68,6 +68,7 @@ function addPlayer(room: Room, ws: WebSocket) {
   if (room.players.size >= 2) return
   if (room.players.has("barco")) room.players.set("sol", ws)
   else room.players.set("barco", ws)
+  if (room.players.size >= 2) room.new = false
   return room.board
 }
 
@@ -80,6 +81,9 @@ function leaveRoom(ws: WebSocket) {
   // If room becomes empty delete after timeout
   if (room.players.size === 0) {
     room.timeout = setTimeout(() => delete(rooms[room.code]), 60000)
+  } else {
+    // Notify the other player that their partner has left
+    broadCastBoardUpdate(room)
   }
 }
 
@@ -87,7 +91,7 @@ function broadCastBoardUpdate(room: Room) {
   room.players.forEach((ws) => {
     const character = getPlayerChar(ws, room)
     if (!character) return
-    sendMessage(ws, { type: "update", board: getPlayerBoardData(character, room.board) })
+    sendMessage(ws, { type: "update", board: getPlayerBoardData(character, room.players.size, room.new, room.board) })
   })
 }
 
@@ -165,9 +169,11 @@ export default function startWSServer() {
               if (!board) return sendMessage(ws, { type: "error", code: 500, text: "Error adding player to room" })
               const playerChar = getPlayerChar(ws, room)
               if (!playerChar) return sendMessage(ws, { type: "error", code: 500, text: "Error setting player character" })
-              sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, board), new: room.players.size < 2 })
+              sendMessage(ws, { type: "join", board: getPlayerBoardData(playerChar, room.players.size, room.new, board) })
               // if there was a player already in the room update them so the game can start
               if (barco) sendMessage(barco, { type: "start" })
+              // Broadcast the join to all players
+              broadCastBoardUpdate(room)
             }
           }
         } else {

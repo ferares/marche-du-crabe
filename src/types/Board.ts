@@ -26,4 +26,6 @@ export type PlayerBoard = {
   currentEnemy?: Enemy
   freedCount: number
   enemyCount: number
+  connectedPlayers: number
+  new: boolean
 }

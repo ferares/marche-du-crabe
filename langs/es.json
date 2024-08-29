@@ -1,5 +1,28 @@
 {
   "Labels": {
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "loading": "Cargando..."
+  },
+  "Messages": {
+    "error": "Ocurrió un error inesperado. Intenta de nuevo más tarde",
+    "error-new-game": "Ocurrió un problema creando la partida. Intenta de nuevo más tarde",
+    "game-not-found": "Partida no encontrada",
+    "game-full": "Partida llena",
+    "connection-lost": "Se perdió la conexión con el servidor. Reconectando...",
+    "your-turn": "Tu turno",
+    "waiting-for-player": "Esperando al otro jugador",
+    "draw-card": "Saca una carta de enemigo",
+    "place-card": "Coloca la carta de enemigo",
+    "move-crabs": "Mueve a los cangrejos",
+    "freed-crabs": "Cangrejos liberados",
+    "remaining-shrimps": "Camarones restantes",
+    "remaining-enemy-cards": "Cartas de enemigo restantes",
+    "object-enemy": "Objetos con enemigos",
+    "place-enemy": "Coloca al enemigo en esta fila",
+    "new-game": "Juego nuevo",
+    "game-lose": "¡Perdiste! - ¿Jugar de nuevo?",
+    "game-win": "¡Ganaste! - ¿Jugar de nuevo?",
+    "share": "Comparte la URL de la página con un amigo para empezar el juego",
+    "player-disconnected": "El otro jugador perdió la conexión. Esperando que se reconecten..."
   }
 }

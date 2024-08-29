@@ -171,25 +171,6 @@ body {
   inset: 0;
 }
 
-.share {
-  align-items: center;
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  position: absolute;
-  inset: 0;
-}
-
-.share-content {
-  background-color: cadetblue;
-  color: white;
-  font-size: 2rem;
-  border: .5rem solid white;
-  border-radius: 2rem;
-  box-shadow: 8px 16px 16px 0 rgba(0, 0, 0, .2);
-  padding: 2rem;
-}
-
 .game-actions .btn {
   box-shadow: 4px 8px 8px 0 rgba(0, 0, 0, .2);
 }
@@ -246,3 +227,4 @@ body {
 
 @import "./loader.component.css";
 @import "./alert.component.css";
+@import "./modals.component.css";

@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation"
 
 import { startTransition, useCallback, useEffect, useRef, useState } from "react"
 
+import { useTranslations } from "next-intl"
+
 import useWebSocket from "react-use-websocket"
 
 import { type PlayerBoard } from "@/types/Board"
@@ -19,10 +21,12 @@ import { type Response } from "@/wsServer"
 import EnemyComponent from "./Enemy"
 import ObjectComponent from "./Object"
 import CardComponent from "./Card"
+import Modal from "./Modal"
 
 interface BoardComponentProps { code: string }
 
 export default function BoardComponent({ code }: BoardComponentProps) {
+  const t = useTranslations()
   const router = useRouter()
   const didUnmount = useRef(false)
   const { setLoading } = useLoaderContext()
@@ -50,23 +54,29 @@ export default function BoardComponent({ code }: BoardComponentProps) {
     const msg = lastJsonMessage as Response
     if ((msg.type === "join") || (msg.type === "update")) {
       setBoard(msg.board)
-      setWaitForPlayer(msg.new ?? false)
+      console.log(msg.board)
+      if ((!msg.board.new) && (msg.board.connectedPlayers < 2)) {
+        setLoading(true, t("Messages.player-disconnected"))
+      } else {
+        setLoading(false)
+      }
+      setWaitForPlayer(msg.board.new ?? false)
     } else if (msg.type === "start") {
       setWaitForPlayer(false)
     } else if (msg.type === "error") {
       console.error(msg.text)
       if (msg.code === 500) {
-        pushAlert("danger", "There was an unexpected error. Please try again later")
+        pushAlert("danger", t("Messages.error"))
       } else {
         if (msg.code === 404) {
-          pushAlert("danger", "Game session not found")
+          pushAlert("danger", t("Messages.game-not-found"))
         } else if (msg.code === 409) {
-          pushAlert("danger", "Game session full")
+          pushAlert("danger", t("Messages.game-full"))
         }
         startTransition(() => router.push("/"))
       }
     }
-  }, [lastJsonMessage, router, pushAlert])
+  }, [lastJsonMessage, router, pushAlert, setLoading, t])
 
   // Join the room if the board hasn't been setup yet
   useEffect(() => { if (!board) sendJsonMessage({ action: "join", code }) }, [code, sendJsonMessage, board])
@@ -74,7 +84,7 @@ export default function BoardComponent({ code }: BoardComponentProps) {
   // shouldConnect to false on ws close
   function handleClose() {
     if (didUnmount.current) return
-    setLoading(true, "The connection to the game server was lost. Reconnecting...")
+    setLoading(true, t("Messages.connection-lost"))
     setShouldConnect(false)
   }
 
@@ -87,15 +97,16 @@ export default function BoardComponent({ code }: BoardComponentProps) {
     sendJsonMessage({ action: "join", code })
   }, [code, sendJsonMessage, setLoading])
 
-  const handleShare = useCallback(async () => {
-    if (navigator?.share) {
-      await navigator.share({ title: 'Join my game!', text: '', url: window.location.href })
-    } else {
-      await navigator?.clipboard?.writeText(window.location.href)
-    }
-  }, [])
+  // TODO: Re-enable this
+  // const handleShare = useCallback(async () => {
+  //   if (navigator?.share) {
+  //     await navigator.share({ title: 'Join my game!', text: '', url: window.location.href })
+  //   } else {
+  //     await navigator?.clipboard?.writeText(window.location.href)
+  //   }
+  // }, [])
 
-  if (!board) return "Loading...."
+  if (!board) return t("Labels.loading")
 
   const { cards, freedCount, gameState, playersPos, forbiddenObjects, shrimpCount, turn, currentEnemy, character, enemyCount } = board
 
@@ -103,19 +114,19 @@ export default function BoardComponent({ code }: BoardComponentProps) {
     <>
       <header className="game-header">
         <h2 className="turn-title">
-          {turn === character ? "Your turn" : "Waiting for other player"}
-          {turn === character && gameState === "draw" && ": Draw an enemy card"}
-          {turn === character && gameState === "place" && ": Place the enemy card"}
-          {turn === character && gameState === "move" && ": Move the crabs"}
+          {turn === character ? t("Messages.your-turn") : t("Messages.waiting-for-player")}
+          {turn === character && gameState === "draw" && `: ${t("Messages.draw-card")}`}
+          {turn === character && gameState === "place" && `: ${t("Messages.place-card")}`}
+          {turn === character && gameState === "move" && `: ${t("Messages.move-crabs")}`}
         </h2>
         <span className="counts">
-          <span className="count" title="Freed crabs">
+          <span className="count" title={t("Messages.freed-crabs")}>
             {objectRevealedIcon} x {freedCount}
           </span>
-          <span className="count" title="Remaining shrimps">
+          <span className="count" title={t("Messages.remaining-shrimps")}>
             {shrimpIcon} x {shrimpCount}
           </span>
-          <span className="count" title="Remaining enemy cards">
+          <span className="count" title={t("Messages.remaining-enemy-cards")}>
             <span className="">
               <span>
                 {enemyIcons.lobster}
@@ -133,7 +144,7 @@ export default function BoardComponent({ code }: BoardComponentProps) {
           {forbiddenObjects.map((position, index) => {
             const card = cards[position.row][position.column]
             return (
-              <li key={`object-${index}`} title="Object with enemy">
+              <li key={`object-${index}`} title={t("Messages.object-enemy")}>
                 <span className={`card btn card--enemy-${card.object?.enemy?.player} card--disabled`}>
                   {card.object && <ObjectComponent object={card.object} />}
                 </span>
@@ -166,7 +177,7 @@ export default function BoardComponent({ code }: BoardComponentProps) {
           {[0,1,2,3,4,5].map((row) => (
             <li key={row}>
               {currentEnemy && currentEnemy.row === row && (
-                <span className={`card btn btn--enemy card--enemy-${currentEnemy.player} card--disabled`} title="Place enemy on this row">
+                <span className={`card btn btn--enemy card--enemy-${currentEnemy.player} card--disabled`} title={t("Messages.place-enemy")}>
                   <EnemyComponent enemy={currentEnemy} />
                 </span>
               )}
@@ -174,7 +185,7 @@ export default function BoardComponent({ code }: BoardComponentProps) {
           ))}
           {(gameState === "draw") && (turn === character) && (
             <li>
-              <button type="button" className="card btn btn--draw" title="Draw an enemy" onClick={handleDrawEnemy}>
+              <button type="button" className="card btn btn--draw" title={t("Messages.draw-card")} onClick={handleDrawEnemy}>
                 <span>
                   {enemyIcons.lobster}
                 </span>
@@ -190,27 +201,25 @@ export default function BoardComponent({ code }: BoardComponentProps) {
             {(gameState === "lost") && (
               <div className="new-game">
                 <button type="button" className="btn" onClick={restartGame}>
-                  You Lose! - New Game?
+                  {t("Messages.game-lose")}
                 </button>
               </div>
             )}
             {(gameState === "win") && (
               <div className="new-game">
                 <button type="button" className="btn" onClick={restartGame}>
-                  You Win! - New Game?
+                  {t("Messages.game-win")}
                 </button>
               </div>
             )}
           </div>
           )}
       </div>
-      {waitForPlayer && (
-        <div className="share">
-          <button type="button" className="btn" onClick={handleShare}>
-            Share the URL with a friend to start the game
-          </button>
-        </div>
-      )}
+      <Modal id="share-modal" labelledBy="share-modal-title" open={waitForPlayer} closeable={false}>
+        <h2 id="share-modal-title" style={{ textAlign: "center" }}>
+          {t("Messages.share")}
+        </h2>
+      </Modal>
     </>
   )
 }

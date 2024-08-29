@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation"
 
 import { startTransition, useCallback, useEffect, useRef, useState } from "react"
 
+import { useTranslations } from "next-intl"
+
 import useWebSocket from "react-use-websocket"
 
 import { wsOptions, wsURL } from "@/helpers/websockets"
@@ -14,6 +16,7 @@ import { useAlertsContext } from "@/context/Alerts"
 import { type Response } from "@/wsServer"
 
 export default function NewGameBtn() {
+  const t = useTranslations()
   const router = useRouter()
   const { setLoading } = useLoaderContext()
   const { pushAlert } = useAlertsContext()
@@ -36,17 +39,17 @@ export default function NewGameBtn() {
         setLoading(false)
       })
     } else if (msg.type === "error") {
-      pushAlert("danger", "There was a problem creating a new game. Try again later.")
+      pushAlert("danger", t("Messages.error-new-game"))
       console.error(msg.text)
     }
-  }, [lastJsonMessage, router, setLoading, pushAlert])
+  }, [lastJsonMessage, router, setLoading, pushAlert, t])
 
   const handleOpen = useCallback(() => setLoading(false), [setLoading])
 
   // shouldConnect to false on ws close
   function handleClose() {
     if (didUnmount.current) return
-    setLoading(true, "The connection to the game server was lost. Reconnecting...")
+    setLoading(true, t("Messages.connection-lost"))
     setShouldConnect(false)
   }
 
@@ -58,7 +61,7 @@ export default function NewGameBtn() {
   return (
     <div className="new-game">
       <button type="button" className="btn" onClick={newGame}>
-        New Game
+        {t("Messages.new-game")}
       </button>
     </div>
   )
