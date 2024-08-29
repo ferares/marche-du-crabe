@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 
-import { startTransition, useCallback, useEffect, useRef } from "react"
+import { startTransition, useCallback, useEffect, useRef, useState } from "react"
 
 import useWebSocket from "react-use-websocket"
 
@@ -13,7 +13,8 @@ import { type Response } from "@/wsServer"
 export default function NewGameBtn() {
   const router = useRouter()
   const didUnmount = useRef(false)
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions(() => didUnmount.current === false))
+  const [shouldConnect, setShouldConnect] = useState(true)
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions({ shouldReconnect: () => didUnmount.current === false, onClose: () => handleClose() }), shouldConnect)
 
   useEffect(() => () => { didUnmount.current = true }, [])
 
@@ -26,6 +27,12 @@ export default function NewGameBtn() {
       console.error(msg.text)
     }
   }, [lastJsonMessage, router])
+
+  // shouldConnect to false on ws close
+  const handleClose = useCallback(() => setShouldConnect(false), [setShouldConnect])
+
+  // Try to reconnect the ws every 1 second
+  useEffect(() => { if (!shouldConnect) setTimeout(() => setShouldConnect(true), 1000) }, [shouldConnect])
   
   const newGame = useCallback(() => sendJsonMessage({ action: "create" }), [sendJsonMessage])
 

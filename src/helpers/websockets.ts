@@ -16,4 +16,4 @@ export const messages: Record<string, ((...params: never[]) => Message)> = {
 
 const heartbeat: Options["heartbeat"] = { message: JSON.stringify(messages.ping()), returnMessage: JSON.stringify({ type: "pong" }) }
 
-export const wsOptions = (shouldReconnect?: Options["shouldReconnect"]): Options => ({ retryOnError: true, share: true, shouldReconnect, heartbeat })
+export const wsOptions = (options: Partial<Options>): Options => ({ retryOnError: true, share: true, onError: console.error, heartbeat, ...options })

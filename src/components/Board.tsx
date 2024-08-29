@@ -22,7 +22,8 @@ interface BoardComponentProps { code: string }
 export default function BoardComponent({ code }: BoardComponentProps) {
   const router = useRouter()
   const didUnmount = useRef(false)
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions(() => didUnmount.current === false))
+  const [shouldConnect, setShouldConnect] = useState(true)
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions({ shouldReconnect: () => didUnmount.current === false, onOpen: () => handleReconnect(), onClose: () => handleClose() }), shouldConnect)
   const [board, setBoard] = useState<PlayerBoard>()
   const [waitForPlayer, setWaitForPlayer] = useState(true)
 
@@ -50,7 +51,17 @@ export default function BoardComponent({ code }: BoardComponentProps) {
     }
   }, [lastJsonMessage, router])
 
+  // Join the room if the board hasn't been setup yet
   useEffect(() => { if (!board) sendJsonMessage({ action: "join", code }) }, [code, sendJsonMessage, board])
+
+  // shouldConnect to false on ws close
+  const handleClose = useCallback(() => setShouldConnect(false), [setShouldConnect])
+
+  // Try to reconnect the ws every 1 second
+  useEffect(() => { if (!shouldConnect) setTimeout(() => setShouldConnect(true), 1000) }, [shouldConnect])
+
+  // On reconnect re-join the room
+  const handleReconnect = useCallback(() => { sendJsonMessage({ action: "join", code }) }, [code, sendJsonMessage])
 
   const handleShare = useCallback(async () => {
     if (navigator?.share) {
