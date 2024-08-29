@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 
-import { startTransition, useCallback, useEffect, useState } from "react"
+import { startTransition, useCallback, useEffect, useRef, useState } from "react"
 
 import useWebSocket from "react-use-websocket"
 
@@ -21,7 +21,8 @@ interface BoardComponentProps { code: string }
 
 export default function BoardComponent({ code }: BoardComponentProps) {
   const router = useRouter()
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions)
+  const didUnmount = useRef(false)
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket(wsURL, wsOptions(() => didUnmount.current === false))
   const [board, setBoard] = useState<PlayerBoard>()
   const [waitForPlayer, setWaitForPlayer] = useState(true)
 
@@ -32,6 +33,8 @@ export default function BoardComponent({ code }: BoardComponentProps) {
   const placeEnemy = useCallback((row: number, column: number) => sendJsonMessage({ action: "place", row, column }), [sendJsonMessage])
 
   const movePlayer = useCallback((row: number, column: number) => sendJsonMessage({ action: "move", row, column }), [sendJsonMessage])
+  
+  useEffect(() => () => { didUnmount.current = true }, [])
 
   useEffect(() => {
     if (!lastJsonMessage) return
