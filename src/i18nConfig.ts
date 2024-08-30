@@ -33,6 +33,10 @@ export const pathnames = {
     es: "/[code]",
     en: "/[code]",
   },
+  "/tutorial": {
+    es: "/tutorial",
+    en: "/tutorial",
+  },
 } satisfies Pathnames<typeof locales>
 
 export const queryParams = {} satisfies QueryParams

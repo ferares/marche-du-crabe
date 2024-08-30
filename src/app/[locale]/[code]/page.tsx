@@ -1,11 +1,11 @@
-import Board from "@/components/Board"
+import GameComponent from "@/components/Game"
 
 interface GameProps { params: { code: string } }
 
 export default async function Game({ params: { code } }: GameProps) {
   return (
-    <main className="main-content">
-      <Board code={code} />
+    <main>
+      <GameComponent code={code} />
     </main>
   )
 }

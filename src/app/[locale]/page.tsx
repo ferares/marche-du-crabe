@@ -1,8 +1,18 @@
 import { enemyIcons, objectRevealedIcon, playersIcon, shrimpIcon } from "@/helpers/game"
 
+import { getTranslations, unstable_setRequestLocale } from "next-intl/server"
+
+import { type LocaleOption } from "@/i18nConfig"
+
+import { Link } from "@/navigation"
+
 import NewGameBtn from "@/components/NewGameBtn"
 
-export default function Home() {
+interface HomeProps { params: { locale: LocaleOption } }
+
+export default async function Home({ params: { locale } }: HomeProps) {
+  unstable_setRequestLocale(locale)
+  const t = await getTranslations({ locale })
   return (
     <main className="main-content">
       <section className="intro">
@@ -49,6 +59,9 @@ export default function Home() {
           <li>We lose if we run out of {shrimpIcon} or if a player runs out of enemy cards to place on the board.</li>
         </ul>
         <NewGameBtn />
+        <Link href={{ pathname: "/tutorial" }}>
+          {t("Labels.tutorial")}
+        </Link>
       </section>
     </main>
   );

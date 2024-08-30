@@ -7,6 +7,7 @@ import { type Player } from "../types/Player"
 import { type Position } from "../types/Position"
 import { type GameState } from "../types/GameState"
 
+export const forbiddenObjectsIcon = "☠️"
 export const objectRevealedIcon = "🐚"
 export const playersIcon = "🦀"
 export const shrimpIcon = "🦐"
@@ -243,4 +244,94 @@ export function movePlayer(row: number, column: number, board: Board) {
   board.playersPos = { column, row }
   board.turn = board.turn === "barco" ? "sol" : "barco"
   updateGameState("draw", board)
+}
+
+export function getTutorialBoard(): Board {
+  return {
+    cards: [
+      [
+        { object: { icon: objectIcons[8], revealed: false, enemy: { isLobster: false, player: "sol", row: 3 } } },
+        {},
+        {},
+        {},
+        {},
+        { object: { icon: objectIcons[1], revealed: false } },
+      ],
+      [
+        { object: { icon: objectIcons[2], revealed: false } },
+        { object: { icon: objectIcons[3], revealed: false } },
+        {},
+        {},
+        {},
+        {},
+      ],
+      [
+        {},
+        { object: { icon: objectIcons[4], revealed: false } },
+        { object: { icon: objectIcons[5], revealed: false } },
+        {},
+        {},
+        {},
+      ],
+      [
+        {},
+        {},
+        {},
+        {},
+        { object: { icon: objectIcons[6], revealed: false } },
+        { object: { icon: objectIcons[7], revealed: false } },
+      ],
+      [
+        {},
+        {},
+        {},
+        { object: { icon: objectIcons[0], revealed: false, enemy: { isLobster: false, player: "sol", row: 4 } } },
+        {},
+        { object: { icon: objectIcons[9], revealed: false, enemy: { isLobster: false, player: "barco", row: 4 } } },
+      ],
+      [
+        {},
+        {},
+        { object: { icon: objectIcons[10], revealed: false, enemy: { isLobster: false, player: "barco", row: 5 } } },
+        { object: { icon: objectIcons[11], revealed: false } },
+        {},
+        {},
+      ],
+    ],
+    playersPos: { column: 0, row: 5 },
+    enemies: {
+      barco: [
+        { isLobster: true, row: 2, player: "barco" },
+        { isLobster: false, row: 4, player: "barco" },
+        { isLobster: true, row: 4, player: "barco" },
+        { isLobster: false, row: 1, player: "barco" },
+        { isLobster: false, row: 2, player: "barco" },
+        { isLobster: false, row: 5, player: "barco" },
+        { isLobster: false, row: 3, player: "barco" },
+        { isLobster: false, row: 1, player: "barco" },
+        { isLobster: false, row: 0, player: "barco" },
+        { isLobster: true, row: 5, player: "barco" },
+        { isLobster: false, row: 3, player: "barco" },
+        { isLobster: false, row: 0, player: "barco" },
+      ],
+      sol: [
+        { isLobster: true, row: 1, player: "sol" },
+        { isLobster: false, row: 2, player: "sol" },
+        { isLobster: false, row: 5, player: "sol" },
+        { isLobster: false, row: 5, player: "sol" },
+        { isLobster: false, row: 0, player: "sol" },
+        { isLobster: false, row: 4, player: "sol" },
+        { isLobster: false, row: 3, player: "sol" },
+        { isLobster: true, row: 2, player: "sol" },
+        { isLobster: true, row: 3, player: "sol" },
+        { isLobster: false, row: 0, player: "sol" },
+        { isLobster: false, row: 4, player: "sol" },
+        { isLobster: false, row: 1, player: "sol" },
+      ],
+    },
+    gameState: "draw",
+    shrimpCount: 5,
+    turn: "barco",
+    freedCount: 0,
+  }
 }

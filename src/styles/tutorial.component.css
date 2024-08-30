@@ -1,0 +1,90 @@
+.tutorial-wrapper {
+  margin: 0 auto;
+  padding: 1rem 0;
+  max-width: var(--content-width);
+}
+
+.tutorial-container {
+  position: relative;
+}
+
+.tutorial-card {
+  position: absolute;
+}
+
+.tutorial-card--2 {
+  bottom: 6.5rem;
+  right: -1rem;
+}
+
+.tutorial-card--3 {
+  top: 25rem;
+  right: -1rem;
+}
+
+.tutorial-card--4,
+.tutorial-card--5,
+.tutorial-card--6 {
+  top: 16rem;
+  left: 44rem;
+}
+
+.tutorial-card--7 {
+  bottom: 17rem;
+  right: 0rem;
+}
+
+.tutorial-card--8 {
+  top: 13rem;
+  left: 44rem;
+}
+
+.tutorial-card--11,
+.tutorial-card--10 {
+  top: 11rem;
+  right: 34rem; 
+}
+
+@media screen and (max-width: 1350px) {
+  .tutorial-card {
+    position: fixed;
+  }
+
+  .tutorial-card--2 {
+    bottom: 6rem;
+    right: 2rem;
+  }
+
+  .tutorial-card--3 {
+    bottom: 15rem;
+    left: 22rem;
+    right: unset;
+    top: unset;
+  }
+
+  .tutorial-card--4,
+  .tutorial-card--5,
+  .tutorial-card--6 {
+    bottom: 1rem;
+    right: 0;
+    top: unset;
+    left: unset;
+  }
+
+  .tutorial-card--7 {
+    bottom: 6rem;
+    right: 0rem;
+  }
+
+  .tutorial-card--8 {
+    top: 17rem;
+    left: 30rem;
+  }
+
+  .tutorial-card--11,
+  .tutorial-card--10 {
+    top: 4rem;
+    left: 0;
+    right: unset;
+  }
+}

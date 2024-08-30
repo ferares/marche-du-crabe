@@ -1,10 +1,10 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-
 import { startTransition, useCallback, useEffect, useRef, useState } from "react"
 
 import { useTranslations } from "next-intl"
+
+import { useRouter } from "@/navigation"
 
 import useWebSocket from "react-use-websocket"
 
@@ -35,7 +35,7 @@ export default function NewGameBtn() {
     if (msg.type === "create") {
       setLoading(true)
       startTransition(() => {
-        router.push(`/${msg.code}`)
+        router.push({ pathname: "/[code]", params: { code: msg.code } })
         setLoading(false)
       })
     } else if (msg.type === "error") {
