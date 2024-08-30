@@ -2,7 +2,9 @@
   "Labels": {
     "close": "Close",
     "loading": "Loading...",
-    "tutorial": "Tutorial"
+    "tutorial": "Tutorial",
+    "continue": "Continue",
+    "finish-tutorial": "Finish tutorial"
   },
   "Messages": {
     "error": "There was an unexpected error. Please try again later",
@@ -29,19 +31,19 @@
   "Pages": {
     "Tutorial": {
       "t1": "Welcome to the tutorial!",
-      "m1": "<p>Your mission, should you choose to accept it: team up with your buddy and rescue 8 fellow crabs {objectRevealedIcon} trapped in objects scattered around the beach.</p><p>But watch out! 4 of these objects are hiding some sneaky enemies {enemyIcon}. Yikes!</p><p>Luckily, you'll each know the location of 2 of these danger zones. The catch? Crabs don't chat! So, you'll have to get creative and use your actions to signal which objects are a no-go.</p>",
+      "m1": "<p>Team up with your friend and rescue 8 fellow crabs {objectRevealedIcon} trapped in objects scattered around the beach.</p><p>But watch out! 4 of these objects are hiding some sneaky enemies {enemyIcon}. Yikes!</p><p>Luckily, you'll each know the location of 2 of these danger objects. The catch? Crabs don't chat! So, you'll have to get creative and use your actions to signal which objects are a no-go.</p>",
       "t2": "But wait!",
       "m2": "<p>It's not just the hidden foes you've got to worry about—more enemies will be storming the beach as time ticks by. So, hustle up and free those 8 poor crabs before you're completely surrounded!</p><p>Ready? Let's get started!</p>",
       "t3": "Draw an Enemy Card",
       "m3": "Each turn kicks off by drawing a new enemy card. Brace yourself!",
       "t4": "Place the Enemy on the Board",
-      "m4": "<p>Enemies have a specific row where they want to land, chosen at random.</p><p>This one's destined for the top row. Pick an empty spot up there to place your foe!</p>",
+      "m4": "<p>Enemies have a specific row where they need to go, chosen at random.</p><p>This one's destined for the top row. Pick an empty spot up there to place your foe!</p>",
       "t5": "Move the Crabs",
-      "m5": "<p>Your final move each turn? It's time to shuffle those crabs around!</p><p>As any crab enthusiast knows, crabs only scuttle sideways—so you're limited to moving them up and down. But no worries, your friend will handle the horizontal moves when it's their turn!</p>",
+      "m5": "<p>As any crab enthusiast knows, crabs only scuttle sideways—so you're limited to moving them up and down. But no worries, your friend will handle the horizontal moves when it's their turn!</p>",
       "t6": "Move the Crabs",
-      "m6": "<p>You can move the crabs to any space in the current column, but for this tutorial, let's scoot them over to the {objectIcon} on the top row to see what's hiding behind it. Could it be a fellow crab or a sneaky enemy?</p>",
+      "m6": "<p>You can move the crabs to any space in the current column, but for this tutorial, let's move them over to the {objectIcon} on the top row to see what's hiding behind it. Could it be a fellow crab or a sneaky enemy?</p>",
       "t7": "Oh no!",
-      "m7": "<p>Uh-oh! There was a hidden enemy behind the {objectIcon}. Luckily, we started the game with 5 shrimps {shrimpIcon}, and this sneaky foe decided to let us go in exchange for 2 of them. Phew!</p><p>Now it's player 2's turn {playersIcon}. Let's see what they're up to!</p>",
+      "m7": "<p>Uh-oh! There was a hidden enemy behind the {objectIcon}. Luckily, we started the game with 5 shrimps {shrimpIcon}, and this sneaky foe decided to let us go in exchange for 2 of them. Phew!</p><p>Now it's player 2's turn {playersIcon}. Let's see how they do!</p>",
       "t8": "First",
       "m8": "<p>Player 2 will draw an enemy and place it on the board...</p>",
       "t9": "Then",

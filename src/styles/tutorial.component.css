@@ -56,7 +56,7 @@
   }
 
   .tutorial-card--3 {
-    bottom: 15rem;
+    bottom: -1rem;
     left: 22rem;
     right: unset;
     top: unset;
