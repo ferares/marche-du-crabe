@@ -65,14 +65,14 @@
   .tutorial-card--4,
   .tutorial-card--5,
   .tutorial-card--6 {
-    bottom: 1rem;
+    bottom: 0;
     right: 0;
     top: unset;
     left: unset;
   }
 
   .tutorial-card--7 {
-    bottom: 6rem;
+    bottom: 5rem;
     right: 0rem;
   }
 
@@ -83,7 +83,7 @@
 
   .tutorial-card--11,
   .tutorial-card--10 {
-    top: 4rem;
+    top: 1rem;
     left: 0;
     right: unset;
   }

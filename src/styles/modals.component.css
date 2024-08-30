@@ -4,7 +4,7 @@
 .modal:not([open]) { display: none; }
 .modal.open { opacity: 1; }
 .modal.open::backdrop {opacity: 1;}
-.modal-content{ position: relative; background: #FFF; width: 90%; max-width: 1024px; height: auto; max-height: 90%; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.2); padding: 30px; overflow-y: auto; }
+.modal-content{ position: relative; background: #FFF; width: 90%; max-width: 1024px; height: auto; max-height: 90dvh; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.2); padding: 30px; overflow-y: auto; }
 .modal-close{ position: absolute; right: 15px; top: 15px; font-size: 1.6em; border: none; padding: 0; width: 40px; height: 40px; text-align: center; list-style: 40px; }
 
 .modal .modal-content::-webkit-scrollbar{ width: 4px; height: 4px; }

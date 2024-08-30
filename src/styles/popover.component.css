@@ -30,5 +30,5 @@
   margin-left: 2rem;
   left: 100%;
 }
-.popover.show{ opacity: 1; visibility: visible; overflow: visible; min-width: 300px; max-height: 500px; }
+.popover.show{ opacity: 1; visibility: visible; overflow: visible; min-width: 300px; max-height: 80dvh; overflow: auto; }
 .popover .popover-title{ font-weight: bold; margin-bottom: 20px; margin-top: 0; }
