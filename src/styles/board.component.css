@@ -68,8 +68,8 @@
   cursor: initial;
 }
 
-.board--active .card.card--disabled {
-  opacity: .7;
+.board:not(.board--draw) .card:not(.card--active) {
+  opacity: .6;
 }
 
 .board--active .card.card--active {
@@ -185,7 +185,6 @@
 
   .board-wrapper {
     display: block;
-    overflow: auto;
     position: relative;
   }
 
@@ -220,8 +219,13 @@
   }
   
   @media screen and (orientation: portrait) {
+    .game-header,
+    .board-wrapper {
+      min-width: 660px;
+    }
+    
     .board {
-      width: 660px;
+      padding: 0 1rem;
     }
   }
 }

@@ -1,5 +1,7 @@
 "use client"
 
+import { useCallback } from "react"
+
 import { useTranslations } from "next-intl"
 
 import { type PlayerBoard } from "@/types/Board"
@@ -21,6 +23,10 @@ interface BoardComponentProps {
 export default function BoardComponent({ board, onGameRestart, onDrawCard, onPlaceEnemy, onMovePlayers }: BoardComponentProps) {
   const t = useTranslations()
 
+  const activeRowRef = useCallback((node: HTMLElement | null) => {
+    node?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
+  }, [])
+
   const { cards, character, forbiddenObjects, gameState, playersPos, turn, currentEnemy } = board
 
   return (
@@ -38,25 +44,37 @@ export default function BoardComponent({ board, onGameRestart, onDrawCard, onPla
         })}
       </ol>
       <ol className={`board board--${gameState} ${["place", "move"].includes(gameState) && turn === character ? "board--active" : ""}`}>
-        {cards.map((row, rowIndex) => row.map((card, cardIndex) => {
-          let onClickHandler = undefined
-          if (turn === character) {
-            if ((currentEnemy?.row === rowIndex) && (!card.object) && (!card.enemy)) {
-              onClickHandler = () => onPlaceEnemy(rowIndex, cardIndex)
-            } else if (gameState === "move") {
-              if (turn === "barco") {
-                if ((playersPos.column === cardIndex)) onClickHandler = () => onMovePlayers(rowIndex, cardIndex)
-              } else {
-                if ((playersPos.row === rowIndex)) onClickHandler = () => onMovePlayers(rowIndex, cardIndex)
+        {cards.map((row, rowIndex) => {
+          return row.map((card, cardIndex) => {
+            let onClickHandler = undefined
+            if (turn === character) {
+              if ((currentEnemy?.row === rowIndex) && (!card.object) && (!card.enemy)) {
+                onClickHandler = () => onPlaceEnemy(rowIndex, cardIndex)
+              } else if (gameState === "move") {
+                if (turn === "barco") {
+                  if ((playersPos.column === cardIndex)) onClickHandler = () => onMovePlayers(rowIndex, cardIndex)
+                } else {
+                  if ((playersPos.row === rowIndex)) onClickHandler = () => onMovePlayers(rowIndex, cardIndex)
+                }
               }
             }
-          }
-          return (
-            <li key={`${rowIndex}-${cardIndex}`}>
-              <CardComponent card={card} cardPosition={{ column: cardIndex, row: rowIndex }} onClick={onClickHandler} playersPos={playersPos} turn={turn} />
-            </li>
-          )
-        }))}
+            let isActiveRow = false
+            if ((currentEnemy?.row === rowIndex) && (!card.object) && (!card.enemy)) {
+              isActiveRow = true
+            } else if (gameState === "move") {
+              if (turn === "barco") {
+                isActiveRow = ((playersPos.column === cardIndex))
+              } else {
+                isActiveRow = ((playersPos.row === rowIndex))
+              }
+            }
+            return (
+              <li ref={isActiveRow ? activeRowRef : null} key={`${rowIndex}-${cardIndex}`}>
+                <CardComponent isActive={isActiveRow} card={card} cardPosition={{ column: cardIndex, row: rowIndex }} onClick={onClickHandler} playersPos={playersPos} turn={turn} />
+              </li>
+            )
+          })
+        })}
       </ol>
       <ol className={`enemy-rows ${currentEnemy?.row === 5 ? "enemy-rows--top" : ""}`}>
         {[0,1,2,3,4,5].map((row) => (
