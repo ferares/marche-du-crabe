@@ -9,13 +9,13 @@ import { type Player } from "../types/Player"
 import { type Position } from "../types/Position"
 import { type GameState } from "../types/GameState"
 
-export const viewport: Viewport = { width: 800, viewportFit: "contain" }
+export const viewport: Viewport = { width: 1024, viewportFit: "contain" }
 export const forbiddenObjectsIcon = "☠️"
 export const objectRevealedIcon = "🐚"
 export const playersIcon = "🦀"
 export const shrimpIcon = "🦐"
 export const enemyIcons = { lobster: "🦞", octopus: "🐙" }
-const objectIcons = ["📠", "🕶️", "🚽", "🩲", "🥫", "⚓", "🛞", "🛹", "🪀", "🛢️", "🎸", "🏐"]
+const objectIcons = ["📠", "🕶️", "🚽", "🩲", "🥫", "⚓", "👞", "🛹", "🪀", "🛢️", "🎸", "🏐"]
 
 function getRandom(min: number, max: number, exclude?: number[]) {
   let num = Math.floor(Math.random() * (max - min + 1)) + min
@@ -289,8 +289,8 @@ export function getTutorialBoard(): Board {
         {},
         {},
         { object: { icon: objectIcons[0], revealed: false, enemy: { isLobster: false, player: "sol", row: 4 } } },
-        {},
         { object: { icon: objectIcons[9], revealed: false, enemy: { isLobster: false, player: "barco", row: 4 } } },
+        {},
       ],
       [
         {},
