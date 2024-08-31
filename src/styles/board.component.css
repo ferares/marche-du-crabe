@@ -1,6 +1,7 @@
 .game-header {
   align-items: center;
   display: flex;
+  font-family: var(--font-caveat), Arial, Helvetica, sans-serif;
   font-size: 3rem;
   font-weight: bold;
   justify-content: space-between;
@@ -56,12 +57,36 @@
 .card {
   align-items: center;
   display: flex;
-  text-shadow: 1px 1px 2px black;
   height: 100%;
-  justify-content: center;
+  background-color: cadetblue;
+  border: .5rem solid white;
+  border-radius: 2rem;
+  box-shadow: 2px 4px 4px 0 rgba(0, 0, 0, .2);
+  text-shadow: 1px 1px 2px black;
+  color: white;
+  cursor: pointer;
+  font-size: 4rem;
   padding: 1rem;
+  transition: box-shadow .5s ease-in-out;
+  justify-content: center;
   position: relative;
   width: 100%;
+}
+
+.card:hover:not(.card--disabled) {
+  box-shadow: 4px 8px 8px 0 rgba(0, 0, 0, .2);
+}
+
+.card:active:not(.card--disabled) {
+  box-shadow: 2px 4px 4px 0 rgba(0, 0, 0, .2);
+}
+
+.card--draw {
+  animation: pulse 2s infinite;
+}
+
+.card--draw {
+  font-size: 2.7rem;
 }
 
 .card.card--disabled {

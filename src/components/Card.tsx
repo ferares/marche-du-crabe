@@ -16,7 +16,7 @@ export default function CardComponent({ isActive, card, turn, playersPos, cardPo
   const hasEnemy = card.enemy?.player ?? (card.object?.revealed && card.object?.enemy?.player)
 
   return (
-    <button type="button" className={`card btn ${isActive ? "card--active" : ""} ${onClick ? "" : "card--disabled"} ${hasPlayer ? "card--player" : ""} ${hasEnemy ? `card--enemy-${hasEnemy}` : ""} ${card.object ? "card--object" : ""} ${card.object?.revealed ? "card--object-revealed" : ""}`} onClick={onClick}>
+    <button type="button" className={`card ${isActive ? "card--active" : ""} ${onClick ? "" : "card--disabled"} ${hasPlayer ? "card--player" : ""} ${hasEnemy ? `card--enemy-${hasEnemy}` : ""} ${card.object ? "card--object" : ""} ${card.object?.revealed ? "card--object-revealed" : ""}`} onClick={onClick}>
       {card.object && <ObjectComponent object={card.object} />}
       {card.enemy && <EnemyComponent enemy={card.enemy} />}
       {hasPlayer && (<span className={`players players--${turn}`}>{playersIcon}</span>)}

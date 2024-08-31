@@ -9,7 +9,7 @@ import { type Player } from "../types/Player"
 import { type Position } from "../types/Position"
 import { type GameState } from "../types/GameState"
 
-export const viewport: Viewport = { width: 700, viewportFit: "contain" }
+export const viewport: Viewport = { width: 800, viewportFit: "contain" }
 export const forbiddenObjectsIcon = "☠️"
 export const objectRevealedIcon = "🐚"
 export const playersIcon = "🦀"

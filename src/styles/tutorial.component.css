@@ -9,40 +9,68 @@
 }
 
 .tutorial-card {
+  background: #FFF;
   position: absolute;
+  padding: 1rem;
+  box-shadow: 8px 16px 16px 0 rgba(0, 0, 0, .2);
+  border-radius: 10px;
+  display: block;
+  position: absolute;
+  max-height: 80dvh;
+  overflow: auto;
+  width: 400px;
+  z-index: 99999;
+}
+
+.tutorial-card-title{
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.tutorial-btn-wrapper {
+  text-align: right;
 }
 
 .tutorial-card--2 {
-  bottom: 6.5rem;
-  right: -1rem;
+  bottom: 8rem;
+  right: 1rem;
 }
 
 .tutorial-card--3 {
-  top: 25rem;
-  right: -1rem;
+  top: 10rem;
+  right: 1rem;
 }
 
 .tutorial-card--4,
 .tutorial-card--5,
 .tutorial-card--6 {
-  top: 16rem;
-  left: 44rem;
+  left: 22rem;
+}
+
+.tutorial-card--4 {
+  top: 20rem;
+}
+
+.tutorial-card--5,
+.tutorial-card--6  {
+  top: 2rem;
 }
 
 .tutorial-card--7 {
-  bottom: 17rem;
-  right: 0rem;
+  bottom: 19rem;
+  right: 0;
 }
 
 .tutorial-card--8 {
-  top: 13rem;
-  left: 44rem;
+  top: 11rem;
+  left: 24rem;
 }
 
 .tutorial-card--11,
 .tutorial-card--10 {
   top: 11rem;
-  right: 34rem; 
+  right: 14rem; 
 }
 
 @media screen and (max-width: 1350px) {
@@ -50,41 +78,35 @@
     position: fixed;
   }
 
-  .tutorial-card--2 {
-    bottom: 6rem;
-    right: 2rem;
-  }
-
   .tutorial-card--3 {
-    bottom: -1rem;
-    left: 22rem;
-    right: unset;
-    top: unset;
+    top: 19rem;
+    right: 12rem;
   }
 
   .tutorial-card--4,
   .tutorial-card--5,
   .tutorial-card--6 {
-    bottom: 0;
-    right: 0;
-    top: unset;
-    left: unset;
+    left: 9rem;
+  }
+
+  .tutorial-card--5,
+  .tutorial-card--6  {
+    top: 10rem;
   }
 
   .tutorial-card--7 {
-    bottom: 5rem;
-    right: 0rem;
+    bottom: 8rem;
+    right: 2rem;
   }
 
   .tutorial-card--8 {
-    top: 17rem;
-    left: 30rem;
+    top: 16rem;
+    left: 10rem;
   }
 
   .tutorial-card--11,
   .tutorial-card--10 {
-    top: 1rem;
-    left: 0;
-    right: unset;
+    top: 17rem;
+    right: 3rem;
   }
 }

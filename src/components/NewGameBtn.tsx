@@ -15,6 +15,8 @@ import { useAlertsContext } from "@/context/Alerts"
 
 import { type Response } from "@/wsServer"
 
+import Button from "./Button"
+
 export default function NewGameBtn() {
   const t = useTranslations()
   const router = useRouter()
@@ -59,10 +61,8 @@ export default function NewGameBtn() {
   const newGame = useCallback(() => sendJsonMessage({ action: "create" }), [sendJsonMessage])
 
   return (
-    <div className="new-game">
-      <button type="button" className="btn" onClick={newGame}>
-        {t("Messages.new-game")}
-      </button>
-    </div>
+    <Button onClick={newGame}>
+      {t("Messages.new-game")}
+    </Button>
   )
 }

@@ -88,7 +88,7 @@ export default function BoardComponent({ board, onGameRestart, onDrawCard, onPla
         ))}
         {(gameState === "draw") && (turn === character) && (
           <li>
-            <button type="button" className="card btn btn--draw" title={t("Messages.draw-card")} onClick={onDrawCard}>
+            <button type="button" className="card card--draw" title={t("Messages.draw-card")} onClick={onDrawCard}>
               <span>
                 {enemyIcons.lobster}
               </span>

@@ -1,23 +1,22 @@
 "use client"
 
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+import { type PropsWithChildren, type ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 
 import { type RichTranslationValues, useTranslations } from "next-intl"
 
 import { useRouter } from "@/navigation"
 
-import { type PlayerBoard, type Board } from "@/types/Board"
+import { type PlayerBoard } from "@/types/Board"
 
-import { drawEnemy, enemyIcons, getPlayerBoardData, movePlayer, objectRevealedIcon, placeEnemy, playersIcon, shrimpIcon } from "@/helpers/game"
+import { drawEnemy, enemyIcons, getPlayerBoardData, getTutorialBoard, movePlayer, objectRevealedIcon, placeEnemy, playersIcon, shrimpIcon } from "@/helpers/game"
 
 import BoardComponent from "./Board"
 import GameHeader from "./GameHeader"
 import Modal from "./Modal"
-import Popover from "./Popover"
+import Button from "./Button"
 
-interface TutorialComponentProps { board: Board }
-
-export default function TutorialComponent({ board }: TutorialComponentProps) {
+export default function TutorialComponent() {
+  const board = useMemo(() => getTutorialBoard(), [])
   const t = useTranslations()
   const router = useRouter()
   const [tutorialStep, setTutorialStep] = useState(0)
@@ -61,9 +60,11 @@ export default function TutorialComponent({ board }: TutorialComponentProps) {
   }
 
   const contiuneBtn = useCallback((label = t("Labels.continue")) => (
-    <button type="button" onClick={() => setTutorialStep((current) => current + 1)}>
-      {label}
-    </button>
+    <div className="tutorial-btn-wrapper">
+      <Button onClick={() => setTutorialStep((current) => current + 1)}>
+        {label}
+      </Button>
+    </div>
   ), [t])
 
   const translationOptions: RichTranslationValues = useMemo(() => ({ p: (chunks: ReactNode) => <p>{chunks}</p> }), [])
@@ -98,76 +99,75 @@ export default function TutorialComponent({ board }: TutorialComponentProps) {
             </Modal>
           )}
           {(tutorialStep === 2) && (
-            <div className="tutorial-card tutorial-card--2">
-              <Popover open title={t("Pages.Tutorial.t3")}>
-                {t.rich("Pages.Tutorial.m3", translationOptions)}
-              </Popover>
-            </div>
+            <TutorialCard title={t("Pages.Tutorial.t3")} step={tutorialStep}>
+              {t.rich("Pages.Tutorial.m3", translationOptions)}
+            </TutorialCard>
           )}
           {(tutorialStep === 3) && (
-            <div className="tutorial-card tutorial-card--3">
-              <Popover open title={t("Pages.Tutorial.t4")}>
-                {t.rich("Pages.Tutorial.m4", translationOptions)}
-              </Popover>
-            </div>
+            <TutorialCard title={t("Pages.Tutorial.t4")} step={tutorialStep}>
+              {t.rich("Pages.Tutorial.m4", translationOptions)}
+            </TutorialCard>
           )}
           {(tutorialStep === 4) && (
-            <div className="tutorial-card tutorial-card--4">
-              <Popover open title={t("Pages.Tutorial.t5")}>
-                {t.rich("Pages.Tutorial.m5", translationOptions)}
-                {contiuneBtn()}
-              </Popover>
-            </div>
+            <TutorialCard title={t("Pages.Tutorial.t5")} step={tutorialStep}>
+              {t.rich("Pages.Tutorial.m5", translationOptions)}
+              {contiuneBtn()}
+            </TutorialCard>
           )}
           {(tutorialStep === 5) && (
-            <div className="tutorial-card tutorial-card--5">
-              <Popover open title={t("Pages.Tutorial.t6")}>
-                {t.rich("Pages.Tutorial.m6", { objectIcon: board.cards[0][0].object?.icon, ...translationOptions })}
-              </Popover>
-            </div>
+            <TutorialCard title={t("Pages.Tutorial.t6")} step={tutorialStep}>
+              {t.rich("Pages.Tutorial.m6", { objectIcon: board.cards[0][0].object?.icon, ...translationOptions })}
+            </TutorialCard>
           )}
           {(tutorialStep === 6) && (
-            <div className="tutorial-card tutorial-card--6">
-              <Popover open title={t("Pages.Tutorial.t7")}>
-                {t.rich("Pages.Tutorial.m7", { objectIcon: board.cards[0][0].object?.icon, shrimpIcon, playersIcon, ...translationOptions })}
-                {contiuneBtn()}
-              </Popover>
-            </div>
+            <TutorialCard title={t("Pages.Tutorial.t7")} step={tutorialStep}>
+              {t.rich("Pages.Tutorial.m7", { objectIcon: board.cards[0][0].object?.icon, shrimpIcon, playersIcon, ...translationOptions })}
+              {contiuneBtn()}
+            </TutorialCard>
           )}
           {(tutorialStep === 7) && (
-            <div className="tutorial-card tutorial-card--7">
-              <Popover open title={t("Pages.Tutorial.t8")}>
-                {t.rich("Pages.Tutorial.m8", translationOptions)}
-                {contiuneBtn()}
-              </Popover>
-            </div>
+            <TutorialCard title={t("Pages.Tutorial.t8")} step={tutorialStep}>
+              {t.rich("Pages.Tutorial.m8", translationOptions)}
+              {contiuneBtn()}
+            </TutorialCard>
           )}
           {(tutorialStep === 8) && (
-            <div className="tutorial-card tutorial-card--8">
-              <Popover open title={t("Pages.Tutorial.t9")}>
-                {t.rich("Pages.Tutorial.m9", translationOptions)}
-                {contiuneBtn()}
-              </Popover>
-            </div>
+            <TutorialCard title={t("Pages.Tutorial.t9")} step={tutorialStep}>
+              {t.rich("Pages.Tutorial.m9", translationOptions)}
+              {contiuneBtn()}
+            </TutorialCard>
           )}
           {(tutorialStep === 10) && (
-            <div className="tutorial-card tutorial-card--10">
-              <Popover open title={t("Pages.Tutorial.t10")} position="right">
-                {t.rich("Pages.Tutorial.m10", { objectIcon: board.cards[0][5].object?.icon, objectRevealedIcon, ...translationOptions })}
-                {contiuneBtn()}
-              </Popover>
-            </div>
+            <TutorialCard title={t("Pages.Tutorial.t10")} step={tutorialStep}>
+              {t.rich("Pages.Tutorial.m10", { objectIcon: board.cards[0][5].object?.icon, objectRevealedIcon, ...translationOptions })}
+              {contiuneBtn()}
+            </TutorialCard>
           )}
           {(tutorialStep === 11) && (
-            <div className="tutorial-card tutorial-card--11">
-              <Popover open title={t("Pages.Tutorial.t11")} position="right">
-                {t.rich("Pages.Tutorial.m11", { shrimpIcon, ...translationOptions })}
-                {contiuneBtn()}
-              </Popover>
-            </div>
+            <TutorialCard title={t("Pages.Tutorial.t11")} step={tutorialStep}>
+              {t.rich("Pages.Tutorial.m11", { shrimpIcon, ...translationOptions })}
+              {contiuneBtn()}
+            </TutorialCard>
           )}
         </div>
       </div>
     </>
+  )
+}
+
+interface TutorialCardProps { title: string, step: number }
+
+function TutorialCard({ children, title, step }: PropsWithChildren<TutorialCardProps>) {
+  return (
+    <div className={`tutorial-card tutorial-card--${step}`} role="dialog">
+      <div className="tutorial-card-header">
+        <h4 className="tutorial-card-title">
+          {title}
+        </h4>
+      </div>
+      <div className="tutorial-card-content">
+        {children}
+      </div>
+    </div>
   )
 }

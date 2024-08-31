@@ -8,10 +8,15 @@
 
 body {
   background-color: wheat;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-fuzzy-bubbles), Arial, Helvetica, sans-serif;
   margin: 0;
+  font-size: 1.2rem;
   height: 100vh;
   padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-caveat), Arial, Helvetica, sans-serif;
 }
 
 .main-content {
@@ -19,10 +24,16 @@ body {
   padding: 1rem;
 }
 
-.intro {
-  font-size: 1.25rem;
+.home-title {
+  text-align: center;
+  font-size: 3rem;
+}
+
+.home-actions {
+  display: grid;
+  gap: 1rem;
   margin: 0 auto;
-  max-width: var(--content-width);
+  max-width: 600px;
 }
 
 .new-game {
@@ -33,37 +44,9 @@ body {
   width: 100%;
 }
 
-.btn {
-  background-color: cadetblue;
-  border: .5rem solid white;
-  border-radius: 2rem;
-  box-shadow: 2px 4px 4px 0 rgba(0, 0, 0, .2);
-  color: white;
-  cursor: pointer;
-  font-size: 4rem;
-  padding: 1rem;
-  transition: box-shadow .5s ease-in-out;
-}
-
-.btn:hover:not(.card--disabled) {
-  box-shadow: 4px 8px 8px 0 rgba(0, 0, 0, .2);
-}
-
-.btn:active:not(.card--disabled) {
-  box-shadow: 2px 4px 4px 0 rgba(0, 0, 0, .2);
-}
-
-.btn--draw {
-  animation: pulse 2s infinite;
-}
-
-.btn--draw {
-  font-size: 2.7rem;
-}
-
+@import "./button.component.css";
 @import "./board.component.css";
 @import "./loader.component.css";
 @import "./alert.component.css";
 @import "./modals.component.css";
-@import "./popover.component.css";
 @import "./tutorial.component.css";
