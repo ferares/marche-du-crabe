@@ -12,7 +12,7 @@ import { type LocaleOption } from "@/i18nConfig"
 
 export const metadata: Metadata = {
   title: "La Marche du Crabe",
-  robots: { follow: false, index: false }
+  robots: { follow: false, index: false },
 }
 
 interface RootLayoutProps { params: { locale: LocaleOption }, children: React.ReactNode }
