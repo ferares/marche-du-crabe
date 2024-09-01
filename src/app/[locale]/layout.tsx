@@ -6,10 +6,13 @@ import { Caveat, Fuzzy_Bubbles } from 'next/font/google'
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, unstable_setRequestLocale } from "next-intl/server"
 
+import { type LocaleOption } from "@/i18nConfig"
+
 import { AlertsProvider } from "@/context/Alerts"
 import { LoaderProvider } from "@/context/Loader"
 
-import { type LocaleOption } from "@/i18nConfig"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 
 const caveat = Caveat({ subsets: ['latin'], display: 'swap', variable: "--font-caveat" })
 const fuzzyBubbles = Fuzzy_Bubbles({ subsets: ['latin'], weight: ["400"], display: 'swap', variable: "--font-fuzzy-bubbles" })
@@ -30,7 +33,9 @@ export default async function RootLayout({ children, params: { locale } }: RootL
         <NextIntlClientProvider messages={messages}>
           <AlertsProvider>
             <LoaderProvider>
+              <Header />
               {children}
+              <Footer />
             </LoaderProvider>
           </AlertsProvider>
         </NextIntlClientProvider>

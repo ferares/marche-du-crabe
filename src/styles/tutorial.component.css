@@ -35,7 +35,7 @@
 }
 
 .tutorial-card--2 {
-  bottom: 8rem;
+  bottom: 10rem;
   right: 1rem;
 }
 
@@ -47,7 +47,7 @@
 .tutorial-card--4,
 .tutorial-card--5,
 .tutorial-card--6 {
-  left: 22rem;
+  left: 20rem;
 }
 
 .tutorial-card--4 {
@@ -76,13 +76,8 @@
 }
 
 @media screen and (max-width: 1350px) {
-  .tutorial-card {
-    position: fixed;
-  }
-
   .tutorial-card--3 {
-    top: 19rem;
-    right: 12rem;
+    right: 15rem;
   }
 
   .tutorial-card--4,
@@ -93,7 +88,7 @@
 
   .tutorial-card--5,
   .tutorial-card--6  {
-    top: 10rem;
+    top: 4rem;
   }
 
   .tutorial-card--7 {
@@ -102,13 +97,13 @@
   }
 
   .tutorial-card--8 {
-    top: 19rem;
-    left: 13rem;
+    top: 10rem;
+    left: 15rem;
   }
 
   .tutorial-card--11,
   .tutorial-card--10 {
-    top: 19rem;
+    top: 10rem;
     right: 3rem;
   }
 }

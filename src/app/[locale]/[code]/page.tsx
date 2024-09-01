@@ -7,7 +7,7 @@ export { viewport }
 interface GameProps { params: { code: string } }
 export default async function Game({ params: { code } }: GameProps) {
   return (
-    <main>
+    <main className="content">
       <GameComponent code={code} />
     </main>
   )

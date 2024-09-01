@@ -4,7 +4,9 @@
     "loading": "Loading...",
     "tutorial": "Tutorial",
     "continue": "Continue",
-    "finish-tutorial": "Finish tutorial"
+    "finish-tutorial": "Finish tutorial",
+    "change-language": "Change language",
+    "home": "Home"
   },
   "Messages": {
     "error": "There was an unexpected error. Please try again later",

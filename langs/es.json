@@ -4,7 +4,9 @@
     "loading": "Cargando...",
     "tutorial": "Tutorial",
     "continue": "Continuar",
-    "finish-tutorial": "Terminar tutorial"
+    "finish-tutorial": "Terminar tutorial",
+    "change-language": "Cambiar idioma",
+    "home": "Inicio"
   },
   "Messages": {
     "error": "Ocurrió un error inesperado. Intenta de nuevo más tarde",

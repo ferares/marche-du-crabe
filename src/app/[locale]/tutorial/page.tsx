@@ -6,7 +6,7 @@ export { viewport }
 
 export default async function Tutorial() {
   return (
-    <main>
+    <main className="content">
       <TutorialComponent />
     </main>
   )

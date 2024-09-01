@@ -1,4 +1,4 @@
-.loader{ position: fixed;  display: flex; align-items: center; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.6); top: 0; left: 0; z-index: 999999; width: 100vw; height: 100vh; transition: all .3s; visibility: hidden; transition: all .3s; }
+.loader{ position: fixed;  display: flex; align-items: center; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.6); top: 0; left: 0; z-index: 999999; width: 100dvw; height: 100dvh; transition: all .3s; visibility: hidden; transition: all .3s; }
 
 .loader.active{ opacity: 1; visibility: visible; }
 .loader span{ display: inline-block; }
